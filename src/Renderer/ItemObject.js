@@ -54,8 +54,11 @@ function(   DB,            EntityManager,            Entity,                Alti
 			return entity.position[2] === level;
 		});
 
-
 		EntityManager.add(entity);
+
+		// Autoloot
+		entity.onMouseDown();
+		entity.onMouseUp();
 	}
 
 

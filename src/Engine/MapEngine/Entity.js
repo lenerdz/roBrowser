@@ -40,6 +40,18 @@ define(function( require )
 	var Escape        = require('UI/Components/Escape/Escape');
 
 
+	function attack(entity) {
+		if (Session.Entity.lastAction) {
+			var lastAction = (new Date()).getTime() - Session.Entity.lastAction.getTime();
+			console.log('ACTION: ' + Session.Entity.action + ', lastIdle: ' + lastAction);
+
+			if (entity.objecttype === Entity.TYPE_MOB && lastAction > 2500) {
+				entity.onFocus();
+				Session.Entity.lastAction.setSeconds(Session.Entity.lastAction.getSeconds() + 10);
+			}
+		}
+	}
+
 	/**
 	 * Spam an entity on the map
 	 * Generic packet handler
@@ -50,13 +62,15 @@ define(function( require )
 
 		if (entity) {
 			entity.set(pkt);
-		}
-		else {
+		} else {
 			entity = new Entity();
+
 			entity.set(pkt);
 
 			EntityManager.add(entity);
 		}
+
+		attack(entity);
 	}
 
 
@@ -94,6 +108,8 @@ define(function( require )
 			//entity.position[1] = pkt.MoveData[1];
 			//entity.position[2] = Altitude.getCellHeight(  pkt.MoveData[0],  pkt.MoveData[1] );
 			entity.walkTo( pkt.MoveData[0], pkt.MoveData[1], pkt.MoveData[2], pkt.MoveData[3] );
+
+			attack(entity);
 		}
 	}
 
@@ -123,6 +139,8 @@ define(function( require )
 					play:   true
 				});
 			}
+
+			attack(entity);
 		}
 	}
 
@@ -140,6 +158,8 @@ define(function( require )
 			entity.position[1] = pkt.yPos;
 			entity.position[2] = Altitude.getCellHeight( pkt.xPos,  pkt.yPos );
 		}
+
+		attack(entity);
 	}
 
 
@@ -162,6 +182,8 @@ define(function( require )
 				};
 			}
 		}
+
+		attack(entity);
 	}
 
 
@@ -182,6 +204,8 @@ define(function( require )
 				depth:  5.0
 			});
 		}
+
+		attack(entity);
 	}
 
 
@@ -242,6 +266,13 @@ define(function( require )
 			case 9:  // endure
 			case 10: // critital
 				if (dstEntity) {
+					if (dstEntity === Session.Entity) {
+						srcEntity.onFocus();
+						dstEntity.lastAction = new Date();
+					} else {
+						srcEntity.lastAction = new Date();
+					}
+
 					// only if damage and do not have endure
 					// and damage isn't absorbed (healing)
 					if (pkt.damage && pkt.action !== 9 && pkt.action !== 4) {

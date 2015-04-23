@@ -94,6 +94,7 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 			anim.next   = option.next   || false;
 			anim.save   = false;
 
+
 			// Reset sounds
 			this.sound.free();
 		}
