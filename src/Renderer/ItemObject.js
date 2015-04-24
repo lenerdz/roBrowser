@@ -57,8 +57,8 @@ function(   DB,            EntityManager,            Entity,                Alti
 		EntityManager.add(entity);
 
 		// Autoloot
-		entity.onMouseDown();
-		entity.onMouseUp();
+		//entity.onMouseDown();
+		//entity.onMouseUp();
 	}
 
 

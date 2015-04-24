@@ -136,7 +136,6 @@ define(function( require )
 			reload();
 		});
 
-
 		Context.checkSupport();
 
 		// Execute

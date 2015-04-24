@@ -9,28 +9,28 @@
 		<script type="text/javascript">
 			function initialize() {
 				var ROConfig = {
-					type:          ROBrowser.TYPE.FRAME,
-					application:   ROBrowser.APP.ONLINE,
-					autoLogin: ['imwizard', '89533534018'],
-					remoteClient:  "http://play.aeva-ro.com/client/",
-					width:         800,
-					height:        600,
-					development:   true,
-					version:       20150407,
+					type: ROBrowser.TYPE.FRAME,
+					application: ROBrowser.APP.ONLINE,
+					remoteClient: "http://localhost/client/",
+					width: 800,
+					height: 600,
+					development: true,
+					version: 20150407,
 					servers: [{
-						display:     "Aeva Ragnarok Online",
-						desc:        "A tale that never ends.",
-						address:     "167.114.188.161",
-						port:        6900,
-						version:     45,
-						langtype:    0,
-						packetver:   20131223,
-						packetKeys: [0x611B7097,0x768A0FCB,0x768A0FCB],
-						socketProxy:   "ws://23.94.215.228:5999/"
+						display: "Aeva Ragnarok Online",
+						desc: "A tale that never ends.",
+						address: "167.114.188.161",
+						port: 6900,
+						version: 45,
+						langtype: 0,
+						packetver: 20131223,
+						packetKeys: [0x611B7097, 0x768A0FCB, 0x768A0FCB],
+//						autoLogin: ['imwizard', '89533534018'],
+						socketProxy: "ws://23.94.215.228:5999/"
 					}],
 					target: document.getElementById('robrowser'),
-					skipServerList:  true,
-					skipIntro:     true
+					skipServerList: true,
+					skipIntro: true
 				};
 				var RO = new ROBrowser(ROConfig);
 				RO.start();

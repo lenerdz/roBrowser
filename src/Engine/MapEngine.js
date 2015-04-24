@@ -21,6 +21,7 @@ define(function( require )
 	var DB               = require('DB/DBManager');
 	var SoundManager     = require('Audio/SoundManager');
 	var BGM              = require('Audio/BGM');
+	var BotEngine        = require('Bot/BotEngine');
 	var Events           = require('Core/Events');
 	var Session          = require('Engine/SessionStorage');
 	var Network          = require('Network/NetworkManager');

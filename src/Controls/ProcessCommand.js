@@ -31,7 +31,7 @@ define(function( require )
 	 * Process command
 	 */
 	return function processCommand( text ){
-		var pkt, matches;
+		var pkt, matches, message;
 		var cmd = text.split(' ')[0];
 
 		switch (cmd) {
@@ -193,6 +193,48 @@ define(function( require )
 
 			case 'hi':
 				getModule('Engine/MapEngine/Friends').sayHi();
+				return;
+
+			case 'bot':
+				var status = text.split(' ')[1];
+				var tick = text.split(' ')[2];
+				message = 'Wrong arguments!';
+
+				if (status === 'start') {
+					getModule('Bot/BotEngine').start(parseInt(tick));
+					message = 'Now bot is enabled!';
+				}
+
+				if (status === 'stop') {
+					getModule('Bot/BotEngine').stop();
+					message = 'Now bot is disabled!';
+				}
+
+				this.addText(message, this.TYPE.INFO);
+				return;
+
+			case 'step':
+				var action = text.split(' ')[1];
+				var step;
+				message = 'Current route :';
+
+				if (action === 'add') {
+					step = getModule('Bot/BotEngine').addStep();
+					message = 'Step ' + step + ' was added. Current route :';
+				}
+
+				if (action === 'delete') {
+					var index = parseInt(text.split(' ')[2]);
+					step = getModule('Bot/BotEngine').deleteStep(index);
+					message = 'Step ' + step + ' was removed. Current route :';
+				}
+
+				var steps = getModule('Bot/BotEngine').getSteps();
+				for (var i = 0; i < steps.length; i++) {
+					message +=  '\n  ' + i + ': ' + steps[i];
+				}
+
+				this.addText(message, this.TYPE.INFO);
 				return;
 		}
 

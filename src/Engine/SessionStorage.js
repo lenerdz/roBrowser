@@ -24,6 +24,7 @@ define(function()
 
 		Character:   null,
 		Entity:      null,
+		Bot:         null,
 
 		AdminList:   [],
 
@@ -36,6 +37,6 @@ define(function()
 		petId:       0,
 
 		hasParty:      false,
-		isPartyLeader: false,
+		isPartyLeader: false
 	};
 });
