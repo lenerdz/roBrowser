@@ -31,7 +31,7 @@ define(function( require )
 	 * Process command
 	 */
 	return function processCommand( text ){
-		var pkt, matches, message;
+		var pkt, matches, message, action, index, i;
 		var cmd = text.split(' ')[0];
 
 		switch (cmd) {
@@ -214,7 +214,7 @@ define(function( require )
 				return;
 
 			case 'step':
-				var action = text.split(' ')[1];
+				action = text.split(' ')[1];
 				var step;
 				message = 'Current route :';
 
@@ -224,18 +224,48 @@ define(function( require )
 				}
 
 				if (action === 'delete') {
-					var index = parseInt(text.split(' ')[2]);
+					index = parseInt(text.split(' ')[2]);
 					step = getModule('Bot/BotEngine').deleteStep(index);
 					message = 'Step ' + step + ' was removed. Current route :';
 				}
 
+        if (action === 'set') {
+          index = parseInt(text.split(' ')[2]);
+          step = getModule('Bot/BotEngine').setCurrentStep(index);
+          message = 'Step index ' + index + ' was set. Current route :';
+        }
+
 				var steps = getModule('Bot/BotEngine').getSteps();
-				for (var i = 0; i < steps.length; i++) {
+				for (i = 0; i < steps.length; i++) {
 					message +=  '\n  ' + i + ': ' + steps[i];
 				}
 
 				this.addText(message, this.TYPE.INFO);
 				return;
+
+      case 'mob':
+        action = text.split(' ')[1];
+        message = 'Current targets :';
+
+        if (action === 'add') {
+          var name = text.split(' ')[2].split('_').join(' ');
+          step = getModule('Bot/BotEngine').addMob(name);
+          message = 'Mob ' + name + ' was added. Current targets :';
+        }
+
+        if (action === 'delete') {
+          index = parseInt(text.split(' ')[2]);
+          step = getModule('Bot/BotEngine').deleteMob(index);
+          message = 'Mob ' + step + ' was removed. Current targets :';
+        }
+
+        var mobs = getModule('Bot/BotEngine').getMobs();
+        for (i = 0; i < mobs.length; i++) {
+          message +=  '\n  ' + i + ': ' + mobs[i];
+        }
+
+        this.addText(message, this.TYPE.INFO);
+        return;
 		}
 
 

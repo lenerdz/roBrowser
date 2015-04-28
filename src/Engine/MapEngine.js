@@ -620,6 +620,8 @@ define(function( require )
 		return false;
 	}
 
+  // TODO: remove
+  window.checkFreeCell = checkFreeCell;
 
 	/**
 	 * Does a cell is free (walkable, and no entity on)

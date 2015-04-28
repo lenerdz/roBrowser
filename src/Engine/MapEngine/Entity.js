@@ -254,12 +254,9 @@ define(function( require )
 			case 9:  // endure
 			case 10: // critital
 				if (dstEntity) {
-					//if (dstEntity === Session.Entity) {
-					//	srcEntity.onFocus();
-					//	dstEntity.lastAction = new Date();
-					//} else {
-					//	srcEntity.lastAction = new Date();
-					//}
+					if (dstEntity === Session.Entity && Session.Entity.onAttack) {
+						Session.Entity.onAttack(srcEntity);
+					}
 
 					// only if damage and do not have endure
 					// and damage isn't absorbed (healing)
