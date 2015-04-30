@@ -162,6 +162,8 @@ define(function( require )
 			return;
 		}
 
+		if (this.onUpdateHealthState) this.onUpdateHealthState(value);
+
 		this._healthStateColor[0] = 1.0;
 		this._healthStateColor[1] = 1.0;
 		this._healthStateColor[2] = 1.0;

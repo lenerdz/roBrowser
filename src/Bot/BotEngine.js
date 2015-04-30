@@ -7,8 +7,7 @@
  *
  */
 
-define(function( require )
-{
+define(function( require ) {
     'use strict';
 
 
@@ -22,6 +21,7 @@ define(function( require )
     var DB            = require('DB/DBManager');
     var SkillId              = require('DB/Skills/SkillConst');
     var SkillTargetSelection = require('UI/Components/SkillTargetSelection/SkillTargetSelection');
+    var StatusState = require('DB/Status/StatusState');
 
     var _steps = [];
     var _interval;
@@ -29,7 +29,23 @@ define(function( require )
     var avaliableMobNames = [];
     var targetGID = null;
 
+    var autoSkills = [{
+        id: SkillId.CR_SPEARQUICKEN,
+        lvl: 10,
+        duration: 300
+    }];
+
     function sign(x) { return x > 0 ? 1 : x < 0 ? -1 : 0; }
+
+    function autocast() {
+        autoSkills.forEach(function(skill) {
+           if (!skill.lastUsage || ((skill.lastUsage.getTime() + skill.duration * 1000) < (new Date()).getTime())) {
+               console.log((new Date()).toLocaleTimeString(), ' skill ' + skill.id + ' was used.');
+               SkillTargetSelection.onUseSkillToId(skill.id, skill.lvl);
+               skill.lastUsage = new Date();
+           }
+        });
+    }
 
     function move() {
         console.log((new Date()).toLocaleTimeString(), ' current step index: ' + currentStepIndex + '.');
@@ -88,11 +104,7 @@ define(function( require )
 
         if (target) {
             targetGID = target.GID;
-            if (target.display.name === 'Vocal') {
-              SkillTargetSelection.onUseSkillToId(SkillId.AC_DOUBLE, 10, targetGID);
-            } else {
-              target.onFocus();
-            }
+            target.onFocus();
             return true;
         } else {
           return false;
@@ -154,6 +166,9 @@ define(function( require )
 
         _interval = setInterval(function() {
             Session.Entity.onAttack = onAttack;
+            Session.Entity.onUpdateHealthState = onUpdateHealthState;
+
+            autocast();
 
             var target = null;
             if (targetGID && EntityManager.get(targetGID)) {
@@ -167,7 +182,7 @@ define(function( require )
             } else {
                 console.log((new Date()).toLocaleTimeString(), ' finding new target. ');
                 targetGID = null;
-                /*if (!autoloot())*/ if (!attack()) move();
+                if (!autoloot()) if (!attack()) move();
             }
 
         }, tick);
@@ -177,7 +192,6 @@ define(function( require )
         clearInterval(_interval);
         _interval = null;
         targetGID = null;
-        Session.Entity.onPickup = null;
     }
 
     function addStep() {
@@ -208,6 +222,12 @@ define(function( require )
 
     function onAttack(srcEntity) {
       targetGID = srcEntity.GID;
+    }
+
+    function onUpdateHealthState(state) {
+        if (state === StatusState.HealthState.POISON) {
+            SkillTargetSelection.onUseSkillToId(SkillId.AL_CURE, 10, Session.Entity.GID);
+        }
     }
 
     function deleteMob(index) {
